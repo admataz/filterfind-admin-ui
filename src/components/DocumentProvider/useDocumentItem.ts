@@ -4,10 +4,13 @@
 
 import { useEffect, useReducer } from "react";
 import { IDocument, documentActionTypes, IUseDocumentItem } from "./types";
-import documentReducer from './documentReducer'
+import documentReducer from "./documentReducer";
 import { useQuery, useMutation } from "@apollo/react-hooks";
-import { GET_SKELETON_DOCUMENT_DATA, GET_DOCUMENT, SAVE_DOCUMENT } from "./queries";
-
+import {
+  GET_SKELETON_DOCUMENT_DATA,
+  GET_DOCUMENT,
+  SAVE_DOCUMENT,
+} from "./queries";
 
 const newDocument: IDocument = {
   id: 0,
@@ -15,62 +18,62 @@ const newDocument: IDocument = {
   excerpt: "",
   body: "",
   related: [],
-  docschema: null
+  docschema: null,
 };
 
 const useDocumentItem = (documentId: number): IUseDocumentItem => {
   const { data: loadedData, loading, error } = useQuery(GET_DOCUMENT, {
     variables: {
-      only: [Number(documentId)]
-    }
+      only: [Number(documentId)],
+    },
   });
 
-  const [saveDocument, { data: savedData, error: saveError, loading: saveLoading }] = useMutation(
-    SAVE_DOCUMENT,
-    {
-      update: (store, { data: { saveDocument } }) => {
-        const data:any = store.readQuery({ query: GET_SKELETON_DOCUMENT_DATA });
-        data.document.push(saveDocument[0]);
-        store.writeQuery({ query: GET_SKELETON_DOCUMENT_DATA, data });
-      }
-    }
-  );
+  const [
+    saveDocument,
+    { data: savedData, error: saveError, loading: saveLoading },
+  ] = useMutation(SAVE_DOCUMENT, {
+    update: (store, { data: { saveDocument } }) => {
+      const data: any = store.readQuery({ query: GET_SKELETON_DOCUMENT_DATA });
+      data.document.push(saveDocument[0]);
+      store.writeQuery({ query: GET_SKELETON_DOCUMENT_DATA, data });
+    },
+  });
 
   const [state, dispatch] = useReducer(documentReducer, {
-      document: newDocument,
-      status: {
-          loading: null, 
-          error: null
-      }
+    document: newDocument,
+    status: {
+      loading: null,
+      error: null,
+    },
   });
 
   useEffect(() => {
     if (!documentId) {
       if (savedData) {
         return dispatch({
-            type: documentActionTypes.DOCUMENT_SAVE_SUCCESS,
-            payload: savedData.saveDocument[0]
-        })
+          type: documentActionTypes.DOCUMENT_SAVE_SUCCESS,
+          payload: savedData.saveDocument[0],
+        });
       }
-      return
+      return;
     }
     if (savedData) {
-        return dispatch({
-          type: documentActionTypes.DOCUMENT_SAVE_SUCCESS,
-          payload: savedData.saveDocument[0]
-      })
+      return dispatch({
+        type: documentActionTypes.DOCUMENT_SAVE_SUCCESS,
+        payload: savedData.saveDocument[0],
+      });
     }
 
     if (loadedData) {
-        return dispatch({
-            type: documentActionTypes.DOCUMENT_LOAD_SUCCESS,
-            payload: loadedData.document[0]
-        })
+      return dispatch({
+        type: documentActionTypes.DOCUMENT_LOAD_SUCCESS,
+        payload: loadedData.document[0],
+      });
     }
   }, [savedData, loadedData, documentId]);
 
-  state.saveDocument = saveDocument
-  return state
+  state.saveDocument = saveDocument;
+  return state;
 };
 
 export default useDocumentItem;

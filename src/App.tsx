@@ -3,7 +3,7 @@ import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./App.css";
 
-import DocumentProvider from "./components/DocumentProvider"
+import DocumentProvider from "./components/DocumentProvider";
 
 import DocumentList from "./components/DocumentList";
 import DocumentItem from "./components/DocumentItem";
@@ -46,9 +46,16 @@ function App() {
           <Main>
             <Content>
               <Switch>
-                <Route path="/document/create/:schemaId?" component={DocumentItem} />
+                <Route
+                  path="/document/create/:schemaId?"
+                  component={DocumentItem}
+                />
                 <Route path="/document/:documentId" component={DocumentItem} />
-                <Route exact path="/documents/:schemaId?" component={DocumentList} />
+                <Route
+                  exact
+                  path="/documents/:schemaId?"
+                  component={DocumentList}
+                />
               </Switch>
             </Content>
           </Main>

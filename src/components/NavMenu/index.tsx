@@ -11,6 +11,6 @@ const NavMenu: React.FC = () => {
       </li>
     </ul>
   );
-}
+};
 
-export default NavMenu
+export default NavMenu;

@@ -2,36 +2,34 @@
  * hook to connect components to the document graphQL data - for initial load
  */
 
-import  { useContext } from "react";
+import { useContext } from "react";
 import { DocumentContext } from "./DocumentContextProvider";
 import { IDocument, IDocSchema } from "./types";
 
 interface IUseDocumentList {
-  document?: IDocument[]
-  docschema?: IDocSchema[]
+  document?: IDocument[];
+  docschema?: IDocSchema[];
   status: {
-    loading?: any
-    error?: any
-  }
+    loading?: any;
+    error?: any;
+  };
 }
 
-const useDocumentList = ():IUseDocumentList => {
+const useDocumentList = (): IUseDocumentList => {
   const { data, loading, error } = useContext(DocumentContext);
-  
+
   // const data = getCachedDocumentData()
-  const document = data?.document
-  const docschema = data?.docschema
-
-
+  const document = data?.document;
+  const docschema = data?.docschema;
 
   return {
-    document, 
+    document,
     docschema,
     status: {
       loading,
-      error
-    }
+      error,
+    },
   };
 };
 
-export default useDocumentList
+export default useDocumentList;

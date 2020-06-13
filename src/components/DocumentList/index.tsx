@@ -8,7 +8,7 @@ const DocumentList = ({ ids }: { ids?: number[] }) => {
   let { schemaId } = useParams<{ schemaId: string }>();
 
   const { document, docschema, status } = useDocumentList();
-  
+
   if (status.loading) {
     return <>Loading</>;
   }
@@ -17,13 +17,13 @@ const DocumentList = ({ ids }: { ids?: number[] }) => {
     return <>:( Error</>;
   }
 
-  const currentSchema = docschema?.find(s => s.id === +schemaId)
- 
+  const currentSchema = docschema?.find((s) => s.id === +schemaId);
+
   return (
     <>
       <ul>
         {docschema &&
-          docschema.map(ds => (
+          docschema.map((ds) => (
             <li key={ds.id}>
               <Link to={`/documents/${ds.id}`}>{ds.label}</Link>
             </li>
@@ -32,13 +32,15 @@ const DocumentList = ({ ids }: { ids?: number[] }) => {
 
       {schemaId && (
         <>
-          <Link to={`/document/create/${schemaId}`}>New {currentSchema?.label}</Link>
+          <Link to={`/document/create/${schemaId}`}>
+            New {currentSchema?.label}
+          </Link>
 
           <ul>
             {document &&
               document
-                .filter(d => d.docschema === +schemaId)
-                .map(row => (
+                .filter((d) => d.docschema === +schemaId)
+                .map((row) => (
                   <li key={row.id}>
                     <Link to={`/document/${row.id}`}>{row.title}</Link>
                   </li>

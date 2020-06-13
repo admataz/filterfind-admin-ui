@@ -21,36 +21,35 @@ interface IDocumentRelationsResult {
 }
 
 interface IDocumentRelationsContext {
-  data?: IDocumentRelationsResult
-  error?: any
-  loading?: any
+  data?: IDocumentRelationsResult;
+  error?: any;
+  loading?: any;
 }
 
 const GET_DOCUMENT_RELATIONSHIPS = gql`
-    {
-        docschema {
-            id
-            label
-            description
-        }
-        document(limit:0){
-            id
-            docschema
-            title
-            related
-        }
+  {
+    docschema {
+      id
+      label
+      description
     }
-
+    document(limit: 0) {
+      id
+      docschema
+      title
+      related
+    }
+  }
 `;
 
-export const DocumentRelationshipsContext = createContext<IDocumentRelationsContext>({data: {docSchema: [], document: []}});
+export const DocumentRelationshipsContext = createContext<
+  IDocumentRelationsContext
+>({ data: { docSchema: [], document: [] } });
 
 const DocumentsRelationshipsProvider: React.FC = ({ children }) => {
   const documentRelationships = useQuery<IDocumentRelationsResult>(
     GET_DOCUMENT_RELATIONSHIPS
   );
-
-  
 
   return (
     <DocumentRelationshipsContext.Provider value={documentRelationships}>

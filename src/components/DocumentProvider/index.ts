@@ -1,7 +1,5 @@
-import DocumentContextProvider from './DocumentContextProvider'
-import useDocumentList from './useDocumentList'
+import DocumentContextProvider from "./DocumentContextProvider";
+import useDocumentList from "./useDocumentList";
 
-export default DocumentContextProvider
-export  {
-    useDocumentList
-}
+export default DocumentContextProvider;
+export { useDocumentList };

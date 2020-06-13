@@ -18,17 +18,17 @@ export const GET_SKELETON_DOCUMENT_DATA = gql`
 
 export const GET_DOCUMENT_ITEMS_DATA = gql`
   query getDocumentItems(
-        $filter: [Int] = []
-        $find: String = ""
-        $pg: Int = 0
-        $limit: Int = 30
-        $match: String = "all"
-        $type: Int
-        $cols: [String] = ["*"]
-        $only: [Int] = []
-        $orderby: String = "created_at"
-        $dir: String = "asc"
-      ) {
+    $filter: [Int] = []
+    $find: String = ""
+    $pg: Int = 0
+    $limit: Int = 30
+    $match: String = "all"
+    $type: Int
+    $cols: [String] = ["*"]
+    $only: [Int] = []
+    $orderby: String = "created_at"
+    $dir: String = "asc"
+  ) {
     document(
       filter: $filter
       find: $find

@@ -14,13 +14,13 @@ const SelectDocSchema: React.FC<SelectDocSchemaProps> = ({
   ...props
 }) => {
   const [field, meta] = useField(props);
-  const {docschema} = useDocumentList()
-  const {value, ...fieldRest} = field
-  
+  const { docschema } = useDocumentList();
+  const { value, ...fieldRest } = field;
+
   return (
     <>
       <label htmlFor={id || props.name}>{label}</label>
-      <select value={value || ''} {...fieldRest} {...props}>
+      <select value={value || ""} {...fieldRest} {...props}>
         {docschema &&
           docschema.map((option: { label: string; id: number }) => (
             <option value={option.id} key={option.id}>
