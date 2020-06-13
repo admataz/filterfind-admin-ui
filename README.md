@@ -2,6 +2,9 @@
 
 Work in progress  React UI for managing content for [filterfind-api](https://github.com/admataz/filterfind-api)
 
+![Filter:Find](./filterfind.svg)
+
+
 - Written with TypeScript
 - Uses Apollo Client for GraphQL data queries/loading and state management
 - Formik and yup for helping build forms and validate input. 
