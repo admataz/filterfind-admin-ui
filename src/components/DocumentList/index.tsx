@@ -1,55 +1,46 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { useQuery } from "@apollo/react-hooks";
 
-import { Link, useParams } from "react-router-dom";
+import { GET_SKELETON_DOCUMENT_DATA } from "../../data//queries";
+import { IDocumentState } from "../../data/types";
 
-import { useDocumentList } from "../DocumentProvider";
+interface IDocumentListProps {
+  type?: number[]
+  find?: string
+}
 
-const DocumentList = ({ ids }: { ids?: number[] }) => {
-  let { schemaId } = useParams<{ schemaId: string }>();
+const DocumentList:React.FC<IDocumentListProps> = ({type, find}) => {
+  
+  const { data, loading, error } = useQuery<IDocumentState>(
+    GET_SKELETON_DOCUMENT_DATA,
+    {
+      variables: {
+        type,
+        find
+      }
+    }
+  );
 
-  const { document, docschema, status } = useDocumentList();
-
-  if (status.loading) {
+  if (loading) {
     return <>Loading</>;
   }
 
-  if (status.error) {
+  if (error) {
     return <>:( Error</>;
   }
 
-  const currentSchema = docschema?.find((s) => s.id === +schemaId);
-
   return (
-    <>
-      <ul>
-        {docschema &&
-          docschema.map((ds) => (
-            <li key={ds.id}>
-              <Link to={`/documents/${ds.id}`}>{ds.label}</Link>
-            </li>
-          ))}
-      </ul>
-
-      {schemaId && (
-        <>
-          <Link to={`/document/create/${schemaId}`}>
-            New {currentSchema?.label}
-          </Link>
-
           <ul>
-            {document &&
-              document
-                .filter((d) => d.docschema === +schemaId)
+            {data?.document &&
+              data.document
                 .map((row) => (
                   <li key={row.id}>
                     <Link to={`/document/${row.id}`}>{row.title}</Link>
                   </li>
                 ))}
           </ul>
-        </>
-      )}
-    </>
-  );
+       );
 };
 
 export default DocumentList;

@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useMemo } from "react";
+import React, { createContext } from "react";
 
 import { IDocumentState } from "./types";
 import { useQuery } from "@apollo/react-hooks";
@@ -19,11 +19,13 @@ const defaultContext: IDocumentContext = {
 export const DocumentContext = createContext<IDocumentContext>(defaultContext);
 
 const DocumentProvider: React.FC = ({ children }) => {
-  const { data: loadedData, loading, error, client } = useQuery(GET_SKELETON_DOCUMENT_DATA);
-  const data = loadedData ? client.readQuery({ query: GET_SKELETON_DOCUMENT_DATA }) : null;
+  const { data: loadedData, loading, error, client } = useQuery(
+    GET_SKELETON_DOCUMENT_DATA
+  );
+  const data = loadedData
+    ? client.readQuery({ query: GET_SKELETON_DOCUMENT_DATA })
+    : null;
 
-  useEffect(() => {
-  }, [loadedData]);
 
   return (
     <DocumentContext.Provider

@@ -7,7 +7,7 @@ import TextField from "../Form/TextField";
 import Breadcrumb from "../Breadcrumb";
 import SelectDocSchema from "../Form/SelectDocSchema";
 import validationSchema from "./validation";
-import RelatedDocuments from "../Form/RelatedDocuments";
+// import RelatedDocuments from "../Form/RelatedDocuments";
 import useDocumentItem from "../DocumentProvider/useDocumentItem";
 import useDocumentList from "../DocumentProvider/useDocumentList";
 import { IDocument } from "../DocumentProvider/types";
@@ -39,7 +39,8 @@ const DocumentItem = () => {
     document,
     status: { error, loading },
   } = useDocumentItem(+documentId);
-  const { document: documentList, docschema } = useDocumentList();
+
+  const { docschema } = useDocumentList();
 
   useEffect(() => {
     if (document?.id && !documentId) {
@@ -69,6 +70,7 @@ const DocumentItem = () => {
   if (loading && !document) return <p>Loading...</p>;
   if (documentId && !document) return <p>Document not found</p>;
   if (error) return <p>Error :(</p>;
+
 
   return (
     <>
@@ -102,18 +104,22 @@ const DocumentItem = () => {
               <StyledInputRow>
                 <SelectDocSchema name="docschema" label="Select Doc Schema" />
               </StyledInputRow>
+
               <StyledInputRow>
                 <TextField id="title" name="title" label="Title" />
               </StyledInputRow>
+
               <StyledInputRow>
                 <TextField multiline name="excerpt" label="Excerpt" />
               </StyledInputRow>
+
               <StyledInputRow>
                 <TextField multiline name="body" label="Body" />
               </StyledInputRow>
 
               <StyledInputRow>
-                <RelatedDocuments />
+                {document.related.map(r => <p>{r}</p>)}
+                {/* <RelatedDocuments /> */}
               </StyledInputRow>
 
               <StyledInputRow>

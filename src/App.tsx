@@ -5,7 +5,8 @@ import "./App.css";
 
 import DocumentProvider from "./components/DocumentProvider";
 
-import DocumentList from "./components/DocumentList";
+import DocumentsPage from "./pages/Documents";
+import DocSchemaPage from "./pages/DocSchema";
 import DocumentItem from "./components/DocumentItem";
 import TopBar from "./components/TopBar";
 import styled from "styled-components";
@@ -54,7 +55,12 @@ function App() {
                 <Route
                   exact
                   path="/documents/:schemaId?"
-                  component={DocumentList}
+                  component={DocumentsPage}
+                />
+                <Route
+                  exact
+                  path="/docschema/"
+                  component={DocSchemaPage}
                 />
               </Switch>
             </Content>

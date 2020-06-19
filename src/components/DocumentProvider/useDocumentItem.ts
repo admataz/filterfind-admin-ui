@@ -48,29 +48,22 @@ const useDocumentItem = (documentId: number): IUseDocumentItem => {
   });
 
   useEffect(() => {
-    if (!documentId) {
-      if (savedData) {
-        return dispatch({
-          type: documentActionTypes.DOCUMENT_SAVE_SUCCESS,
-          payload: savedData.saveDocument[0],
-        });
-      }
-      return;
-    }
     if (savedData) {
-      return dispatch({
+      dispatch({
         type: documentActionTypes.DOCUMENT_SAVE_SUCCESS,
         payload: savedData.saveDocument[0],
       });
     }
+  }, [savedData]);
 
+  useEffect(() => {
     if (loadedData) {
       return dispatch({
         type: documentActionTypes.DOCUMENT_LOAD_SUCCESS,
         payload: loadedData.document[0],
       });
     }
-  }, [savedData, loadedData, documentId]);
+  }, [loadedData]);
 
   state.saveDocument = saveDocument;
   return state;
