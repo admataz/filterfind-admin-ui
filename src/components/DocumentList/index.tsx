@@ -2,23 +2,43 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@apollo/react-hooks";
 
-import { GET_SKELETON_DOCUMENT_DATA } from "../../data//queries";
-import { IDocumentState } from "../../data/types";
+import { GET_DOCUMENT_ITEMS_DATA } from "../../data//queries";
+import {
+  IDocument,
+  IDocumentState,
+  IDocumentsQueryParams,
+} from "../../data/types";
 
 interface IDocumentListProps {
-  type?: number[]
-  find?: string
+  query?: IDocumentsQueryParams;
+  render?: Function;
 }
 
-const DocumentList:React.FC<IDocumentListProps> = ({type, find}) => {
-  
+const defaultRender = ({ row }: { row: IDocument }) => (
+  <div key={row.id}>
+    <Link to={`/document/${row.id}`}>{row.title}</Link>
+  </div>
+);
+
+const DocumentList: React.FC<IDocumentListProps> = ({
+  render = defaultRender,
+  query: { filter, find, pg, limit, match, type, cols, only, orderby, dir } = {},
+}) => {
   const { data, loading, error } = useQuery<IDocumentState>(
-    GET_SKELETON_DOCUMENT_DATA,
+    GET_DOCUMENT_ITEMS_DATA,
     {
       variables: {
+        filter,
+        find,
+        pg,
+        limit,
+        match,
         type,
-        find
-      }
+        cols,
+        only,
+        orderby,
+        dir,
+      },
     }
   );
 
@@ -31,16 +51,11 @@ const DocumentList:React.FC<IDocumentListProps> = ({type, find}) => {
   }
 
   return (
-          <ul>
-            {data?.document &&
-              data.document
-                .map((row) => (
-                  <li key={row.id}>
-                    <Link to={`/document/${row.id}`}>{row.title}</Link>
-                  </li>
-                ))}
-          </ul>
-       );
+    <>
+      {data?.document &&
+        data.document.map((row) => render({row}))}
+    </>
+  );
 };
 
 export default DocumentList;

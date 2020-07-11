@@ -1,23 +1,32 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { Formik, Form, FormikHelpers } from "formik";
 
 import TextField from "../Form/TextField";
-import Breadcrumb from "../Breadcrumb";
 import SelectDocSchema from "../Form/SelectDocSchema";
 import validationSchema from "./validation";
-// import RelatedDocuments from "../Form/RelatedDocuments";
-import useDocumentItem from "../DocumentProvider/useDocumentItem";
-import useDocumentList from "../DocumentProvider/useDocumentList";
-import { IDocument } from "../DocumentProvider/types";
+import { IDocument } from "../../data/types";
+import { useQuery, useMutation } from "@apollo/react-hooks";
+import {
+  GET_SKELETON_DOCUMENT_DATA,
+  GET_DOCUMENT,
+  SAVE_DOCUMENT,
+} from "../../data/queries";
+
+const newDocument: IDocument = {
+  id: 0,
+  title: "",
+  excerpt: "",
+  body: "",
+  related: [],
+  docschema: null,
+};
 
 interface IRouteParams {
   documentId?: string;
   schemaId?: string;
 }
-
-const StyledBreadcrumb = styled(Breadcrumb)``;
 
 const StyledForm = styled(Form)`
   display: flex;
@@ -33,14 +42,37 @@ const StyledInputRow = styled("div")`
 const DocumentItem = () => {
   let { documentId = 0, schemaId } = useParams<IRouteParams>();
   let history = useHistory();
+  const [document, setCurrentDocument] = useState<IDocument>(newDocument);
 
-  const {
+  const { data: loadedData, loading, error } = useQuery(GET_DOCUMENT, {
+    variables: {
+      only: [Number(documentId)],
+    },
+  });
+
+  const [
     saveDocument,
-    document,
-    status: { error, loading },
-  } = useDocumentItem(+documentId);
+    { data: savedData, error: saveError, loading: saveLoading },
+  ] = useMutation(SAVE_DOCUMENT, {
+    update: (store, { data: { saveDocument } }) => {
+      const data: any = store.readQuery({ query: GET_SKELETON_DOCUMENT_DATA });
+      data.document.push(saveDocument[0]);
+      store.writeQuery({ query: GET_SKELETON_DOCUMENT_DATA, data });
+    },
+  });
 
-  const { docschema } = useDocumentList();
+  useEffect(() => {
+    if (savedData) {
+      setCurrentDocument(savedData.saveDocument[0]);
+    }
+  }, [savedData, setCurrentDocument]);
+
+  useEffect(() => {
+    console.log(loadedData)
+    if (loadedData) {
+      setCurrentDocument(loadedData.document[0]);
+    }
+  }, [loadedData, setCurrentDocument]);
 
   useEffect(() => {
     if (document?.id && !documentId) {
@@ -52,7 +84,6 @@ const DocumentItem = () => {
     document.docschema = +schemaId;
   }
 
-  const currentSchema = docschema?.find((s) => s.id === document?.docschema);
 
   const handleSubmit = async (
     docData: IDocument,
@@ -71,27 +102,8 @@ const DocumentItem = () => {
   if (documentId && !document) return <p>Document not found</p>;
   if (error) return <p>Error :(</p>;
 
-
   return (
     <>
-      <StyledBreadcrumb
-        links={[
-          {
-            label: "Dashboard",
-            url: "/",
-          },
-          {
-            label: "Documents",
-            url: "/documents",
-          },
-          {
-            label: currentSchema?.label || "",
-            url: `/documents/${currentSchema?.id}`,
-          },
-        ]}
-        current={document?.title || ""}
-      />
-
       {document && (
         <Formik
           onSubmit={handleSubmit}
@@ -118,18 +130,19 @@ const DocumentItem = () => {
               </StyledInputRow>
 
               <StyledInputRow>
-                {document.related.map(r => <p>{r}</p>)}
-                {/* <RelatedDocuments /> */}
+                {document.related &&
+                  document.related.map((r, i) => <p key={`k-${i}`}>{r}</p>)}
               </StyledInputRow>
 
               <StyledInputRow>
-                <button disabled={isSubmitting}>Save</button>
+                <button disabled={isSubmitting} type="submit">
+                  Save
+                </button>
               </StyledInputRow>
             </StyledForm>
           )}
         </Formik>
       )}
-      {/* <div className="status">{statusMessage}</div> */}
     </>
   );
 };

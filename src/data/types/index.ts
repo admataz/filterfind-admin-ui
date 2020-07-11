@@ -18,6 +18,20 @@ export enum DocumentActionType {
   FETCH_FULL_DOCUMENT_ITEMS_ERROR = "FETCH_FULL_DOCUMENT_ITEMS_ERROR",
 }
 
+export type IDocumentsQueryParams = {
+  docschema?: number[]
+  type?: number[]
+  find?: string
+  filter?: number[]
+  limit?: number
+  match?: 'all' | 'any' 
+  cols?: string[]
+  only?: number[]
+  pg?: number
+  orderby?: string
+  dir?: 'asc' | 'desc'
+}
+
 export interface IDocSchema {
   id: number;
   label: string;

@@ -3,7 +3,7 @@ import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./App.css";
 
-import DocumentProvider from "./components/DocumentProvider";
+// import DocumentProvider from "./components/DocumentProvider";
 
 import DocumentsPage from "./pages/Documents";
 import DocSchemaPage from "./pages/DocSchema";
@@ -39,7 +39,6 @@ const Footer = styled("footer")`
 function App() {
   return (
     <Router>
-      <DocumentProvider>
         <Container>
           <Header>
             <TopBar />
@@ -68,7 +67,6 @@ function App() {
 
           <Footer />
         </Container>
-      </DocumentProvider>
     </Router>
   );
 }

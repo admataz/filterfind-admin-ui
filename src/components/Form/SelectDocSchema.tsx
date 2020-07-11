@@ -1,11 +1,18 @@
 import React from "react";
 import { useField } from "formik";
-import { useDocumentList } from "../DocumentProvider";
+import { useQuery } from "@apollo/react-hooks";
+
+import { GET_DOCSCHEMA } from "../../data//queries";
+import { IDocSchema } from "../../data/types";
 
 interface SelectDocSchemaProps {
   name: string;
   id?: string;
   label: string;
+}
+
+interface DocSchemaData {
+  docschema: IDocSchema[]
 }
 
 const SelectDocSchema: React.FC<SelectDocSchemaProps> = ({
@@ -14,15 +21,30 @@ const SelectDocSchema: React.FC<SelectDocSchemaProps> = ({
   ...props
 }) => {
   const [field, meta] = useField(props);
-  const { docschema } = useDocumentList();
+
+  // const { docschema } = useDocumentList();
   const { value, ...fieldRest } = field;
+
+  const { data, loading, error } = useQuery<DocSchemaData>(
+    GET_DOCSCHEMA
+  );
+
+  if (loading) {
+    return <>Loading</>;
+  }
+
+  if (error) {
+    return <>:( Error</>;
+  }
 
   return (
     <>
+    {data?.docschema && 
+    <>
       <label htmlFor={id || props.name}>{label}</label>
       <select value={value || ""} {...fieldRest} {...props}>
-        {docschema &&
-          docschema.map((option: { label: string; id: number }) => (
+        {data &&
+          data.docschema.map((option: { label: string; id: number }) => (
             <option value={option.id} key={option.id}>
               {option.id} - {option.label}
             </option>
@@ -30,8 +52,10 @@ const SelectDocSchema: React.FC<SelectDocSchemaProps> = ({
       </select>
       {meta.touched && meta.error ? (
         <div className="error">{meta.error}</div>
-      ) : null}
-    </>
+        ) : null}
+        </>
+      }
+        </>
   );
 };
 

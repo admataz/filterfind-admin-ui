@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/react-hooks";
 
 import { GET_SKELETON_DOCUMENT_DATA, GET_DOCSCHEMA } from "../../data/queries";
-import { IDocumentState } from "../../data/types";
+import { IDocument, IDocumentState } from "../../data/types";
 import DocumentList from "../../components/DocumentList";
 
 const DocumentsPage = () => {
@@ -14,10 +14,10 @@ const DocumentsPage = () => {
   );
   const { data: schemaData } = useQuery(GET_DOCSCHEMA);
 
-  useEffect(() => {
-    console.log(schemaData);
-  }, [schemaData]);
+  const [searchFilter, setSearchFilter] = useState('')
 
+  
+  
   if (loading) {
     return <>Loading</>;
   }
@@ -39,12 +39,31 @@ const DocumentsPage = () => {
           ))}
       </ul>
 
+      <form>
+            <input onChange={e => setSearchFilter(e.target.value)} />
+      </form>
+
       <>
-        <Link to={`/document/create/${schemaId||''}`}>
+        <Link to={`/document/create/${schemaId || ""}`}>
           New {currentSchema?.label}
         </Link>
 
-        {currentSchema && <DocumentList type={[currentSchema.id]} />}
+        {currentSchema && (
+          <ul>
+            <DocumentList
+              query={{
+                type: [currentSchema.id],
+                limit: 0,
+                find: searchFilter
+              }}
+              render={({ row }: { row: IDocument }) => (
+                <li key={`doc${row.id}`}>
+                  {row.title} <Link to={`/document/${row.id}`}>Edit</Link>
+                </li>
+              )}
+            />
+          </ul>
+        )}
       </>
     </>
   );

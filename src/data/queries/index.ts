@@ -26,7 +26,6 @@ export const GET_SKELETON_DOCUMENT_DATA = gql`
     docschema {
       id
       label
-      description
     }
     document(
       filter: $filter
